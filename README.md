@@ -25,13 +25,16 @@ A full-stack web application for tracking job applications through every stage o
 
 ```
 Job-Application-Tracker/
+├── docker-compose.yml
 ├── api/                  # FastAPI backend
+│   ├── Dockerfile
 │   ├── main.py           # App entry point & route definitions
 │   ├── models.py         # SQLAlchemy ORM model
 │   ├── schemas.py        # Pydantic request/response schemas
 │   ├── database.py       # Database connection & session management
 │   └── requirements.txt
 └── client/               # TypeScript frontend
+    ├── Dockerfile
     ├── src/
     │   └── main.ts       # API calls & UI logic
     ├── index.html
@@ -42,39 +45,25 @@ Job-Application-Tracker/
 
 ### Prerequisites
 
-- Python 3.10+
-- Node.js 18+
 - Docker
 
-### 1. Start the database
+### Run
 
 ```bash
-docker run --name jobtracker-db \
-  -e POSTGRES_PASSWORD=password \
-  -e POSTGRES_DB=jobtracker \
-  -p 5432:5432 -d postgres
+docker compose up --build
 ```
 
-### 2. Run the API
+| Service | URL |
+|---|---|
+| Frontend | `http://localhost:5173` |
+| API | `http://localhost:8000` |
+| API Docs | `http://localhost:8000/docs` |
+
+To stop all services:
 
 ```bash
-cd api
-pip install -r requirements.txt
-python -m uvicorn main:app --reload
+docker compose down
 ```
-
-API available at `http://localhost:8000`
-Interactive docs at `http://localhost:8000/docs`
-
-### 3. Run the frontend
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Frontend available at `http://localhost:5173`
 
 ## API Reference
 
