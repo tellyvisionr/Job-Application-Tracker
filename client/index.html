@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Application Tracker</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f4f6f9;
+        color: #1a1a2e;
+        padding: 2rem;
+      }
+
+      h1 { font-size: 1.8rem; margin-bottom: 2rem; }
+      h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #444; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        max-width: 1100px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      }
+
+      .card.full { grid-column: 1 / -1; }
+
+      label { display: block; font-size: 0.8rem; color: #666; margin-bottom: 0.25rem; margin-top: 0.75rem; }
+      label:first-of-type { margin-top: 0; }
+
+      input, textarea, select {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: #fafafa;
+      }
+
+      textarea { resize: vertical; min-height: 70px; }
+
+      .row { display: flex; gap: 0.75rem; }
+      .row > div { flex: 1; }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.55rem 1.25rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .btn-primary { background: #4f46e5; color: white; }
+      .btn-primary:hover { background: #4338ca; }
+      .btn-danger { background: #ef4444; color: white; }
+      .btn-danger:hover { background: #dc2626; }
+      .btn-secondary { background: #e5e7eb; color: #374151; }
+      .btn-secondary:hover { background: #d1d5db; }
+
+      .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+      #response {
+        margin-top: 1rem;
+        background: #1e1e2e;
+        color: #cdd6f4;
+        padding: 1rem;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-family: monospace;
+        white-space: pre-wrap;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+      th { text-align: left; padding: 0.5rem 0.75rem; background: #f3f4f6; font-weight: 600; border-bottom: 1px solid #e5e7eb; }
+      td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #f0f0f0; }
+      tr:last-child td { border-bottom: none; }
+
+      .tag {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .tag-applied { background: #dbeafe; color: #1d4ed8; }
+      .tag-phone { background: #fef3c7; color: #b45309; }
+      .tag-interview { background: #ede9fe; color: #6d28d9; }
+      .tag-offer { background: #d1fae5; color: #065f46; }
+      .tag-rejected { background: #fee2e2; color: #b91c1c; }
+
+      .empty { color: #aaa; font-style: italic; padding: 1rem 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Job Application Tracker</h1>
+    <div class="grid">
+
+      <!-- Create -->
+      <div class="card">
+        <h2>Add Application</h2>
+        <label>Company</label>
+        <input id="c-company" type="text" placeholder="Acme Corp" />
+        <label>Role</label>
+        <input id="c-role" type="text" placeholder="Software Engineer" />
+        <label>Status</label>
+        <select id="c-status">
+          <option>Applied</option>
+          <option>Phone Screen</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+        </select>
+        <label>Date Applied</label>
+        <input id="c-date" type="date" />
+        <div class="row">
+          <div>
+            <label>Salary Min</label>
+            <input id="c-sal-min" type="number" placeholder="80000" />
+          </div>
+          <div>
+            <label>Salary Max</label>
+            <input id="c-sal-max" type="number" placeholder="120000" />
+          </div>
+        </div>
+        <label>Notes</label>
+        <textarea id="c-notes" placeholder="Optional notes..."></textarea>
+        <button class="btn-primary" id="btn-create">Create</button>
+      </div>
+
+      <!-- Read / Delete -->
+      <div class="card">
+        <h2>Get / Delete Application</h2>
+        <label>Application ID</label>
+        <input id="r-id" type="number" placeholder="1" />
+        <div class="btn-group">
+          <button class="btn-secondary" id="btn-get-one">Get by ID</button>
+          <button class="btn-danger" id="btn-delete">Delete</button>
+        </div>
+
+        <h2 style="margin-top: 1.5rem">Update Application</h2>
+        <label>Application ID to update</label>
+        <input id="u-id" type="number" placeholder="1" />
+        <label>New Status</label>
+        <select id="u-status">
+          <option value="">-- no change --</option>
+          <option>Applied</option>
+          <option>Phone Screen</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Rejected</option>
+        </select>
+        <label>New Notes</label>
+        <textarea id="u-notes" placeholder="Leave blank to keep existing..."></textarea>
+        <button class="btn-primary" id="btn-update">Update</button>
+      </div>
+
+      <!-- All Applications Table -->
+      <div class="card full">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+          <h2 style="margin:0">All Applications</h2>
+          <button class="btn-secondary" id="btn-refresh">Refresh</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Company</th><th>Role</th><th>Status</th>
+              <th>Date Applied</th><th>Salary</th><th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="apps-table-body">
+            <tr><td colspan="7" class="empty">Click Refresh to load</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Response Log -->
+      <div class="card full">
+        <h2>API Response</h2>
+        <div id="response">Responses will appear here...</div>
+      </div>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
